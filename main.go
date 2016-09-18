@@ -32,11 +32,11 @@ func main() {
 
   // writes each pixel with r/g/b values
   // from top left to bottom right
-  for j := ny - 1; j >= 0; j-- {
-    for i := 0; i < nx; i++ {
+  for y := ny - 1; y >= 0; y-- {
+    for x := 0; x < nx; x++ {
       // red and green values range from
       // 0.0 to 1.0
-      v := Vector{X: float64(i) / float64(nx), Y: float64(j) / float64(ny), Z: 0.2}
+      v := Vector{X: float64(x) / float64(nx), Y: float64(y) / float64(ny), Z: 0.2}
 
       // get intensity of colors
       ir := int(color * v.X)
