@@ -15,7 +15,7 @@ func check(e error, s string) {
 func main() {
   // size of image x and y
   nx := 400
-  ny := 300
+  ny := 200
 
   const color = 255.99
 
@@ -30,22 +30,33 @@ func main() {
 
   check(err, "Error writting to file: %v\n")
 
+  lowerLeft := Vector{-2.0, -1.0, -1.0}
+  horizontal := Vector{4.0, 0.0, 0.0}
+  vertical := Vector{0.0, 2.0, 0.0}
+  origin := Vector{0.0, 0.0, 0.0}
+
   // writes each pixel with r/g/b values
   // from top left to bottom right
-  for y := ny - 1; y >= 0; y-- {
-    for x := 0; x < nx; x++ {
-      // red and green values range from
-      // 0.0 to 1.0
-      v := Vector{X: float64(x) / float64(nx), Y: float64(y) / float64(ny), Z: 0.2}
+  for j := ny - 1; j >= 0; j-- {
+    for i := 0; i < nx; i++ {
+      u := float64(i) / float64(nx)
+      v := float64(j) / float64(ny)
+
+      position := horizontal.MultiplyScalar(u).Add(vertical.MultiplyScalar(v))
+
+      // direction = lowerLeft + (u * horizontal) + (v * vertical)
+      direction := lowerLeft.Add(position)
+
+      rgb := Ray{origin, direction}.Color()
 
       // get intensity of colors
-      ir := int(color * v.X)
-      ig := int(color * v.Y)
-      ib := int(color * v.Z)
+      ir := int(color * rgb.X)
+      ig := int(color * rgb.Y)
+      ib := int(color * rgb.Z)
 
       _, err = fmt.Fprintf(f, "%d %d %d\n", ir, ig, ib)
 
-      check(err, "Error writting to file: %v\n")
+      check(err, "Error writing to file: %v\n")
     }
   }
 }
