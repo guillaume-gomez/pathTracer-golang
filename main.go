@@ -10,8 +10,6 @@ import (
 const (
   nx = 400 // size of x
   ny = 200 // size of y
-  ns = 100 // number of samples for aa
-  color  = 255.99
 )
 
 var (
