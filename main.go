@@ -5,6 +5,7 @@ import (
   "os"
   "math"
   "math/rand"
+  p_ "./primatives"
 )
 
 const (
@@ -15,13 +16,13 @@ const (
 )
 
 var (
-  white = Vector{1.0, 1.0, 1.0}
-  blue  = Vector{0.5, 0.7, 1.0}
+  white = p_.Vector{ 1.0, 1.0, 1.0 }
+  blue  = p_.Vector{ 0.5, 0.7, 1.0 }
 
-  camera = NewCamera()
+  camera = p_.NewCamera()
 
-  sphere = Sphere{Vector{0, 0, -1}, 0.5}
-  floor  = Sphere{Vector{0, -100.5, -1}, 100}
+  sphere = p_.Sphere{ p_.Vector{ 0, 0, -1 }, 0.5 }
+  floor  = p_.Sphere{ p_.Vector{ 0, -100.5, -1 }, 100 }
 )
 
 func check(e error, s string) {
@@ -31,7 +32,7 @@ func check(e error, s string) {
   }
 }
 
-func colorize(r *Ray, sphere Sphere) Vector {
+func colorize(r *p_.Ray, sphere p_.Sphere) p_.Vector {
   hit, record := sphere.Hit(r, 0.0, math.MaxFloat64)
 
   if hit {
@@ -44,7 +45,7 @@ func colorize(r *Ray, sphere Sphere) Vector {
   return gradient(&unitDirection)
 }
 
-func gradient(v *Vector) Vector {
+func gradient(v *p_.Vector) p_.Vector {
   // scale t to be between 0.0 and 1.0
   t := 0.5 * (v.Y + 1.0)
 
@@ -53,7 +54,7 @@ func gradient(v *Vector) Vector {
 }
 
 func gradientSphere(x int, nx int, y int, ny int,f *os.File) error {
-  rgb := Vector{}
+  rgb := p_.Vector{}
   // sample rays for anti-aliasing
     for s := 0; s < 100; s++ {
       u := (float64(x) + rand.Float64()) / float64(nx)
