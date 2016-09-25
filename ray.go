@@ -24,9 +24,7 @@ func(r Ray) HitSphere(s Sphere) bool {
   return discriminant > 0
 }
 
-func(r Ray) Color() Vector {
-  sphere := Sphere{Center: Vector{0, 0, -1}, Radius: 0.5}
-
+func(r Ray) Color(sphere Sphere) Vector {
   white := Vector{1.0, 1.0, 1.0}
   blue := Vector{0.5, 0.7, 1.0}
   red := Vector{ 1.0, 0.0, 0.0 }
@@ -43,5 +41,10 @@ func(r Ray) Color() Vector {
   // linear blend
   // blended_value = (1 - t) * white + t * blue
   return white.MultiplyScalar(1.0 - t).Add(blue.MultiplyScalar(t))
+}
+
+func(r Ray) ColorWithSphere() Vector {
+  sphere := Sphere{Center: Vector{0, 0, -1}, Radius: 0.5}
+  return r.Color(sphere)
 }
 

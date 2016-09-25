@@ -47,7 +47,7 @@ func main() {
       // direction = lowerLeft + (u * horizontal) + (v * vertical)
       direction := lowerLeft.Add(position)
 
-      rgb := Ray{origin, direction}.Color()
+      rgb := Ray{origin, direction}.ColorWithSphere()
 
       // get intensity of colors
       ir := int(color * rgb.X)
