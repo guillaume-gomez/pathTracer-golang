@@ -3,6 +3,13 @@ package main
 import (
   "fmt"
   "os"
+  "math"
+)
+
+var (
+  white = Vector{1.0, 1.0, 1.0}
+  blue  = Vector{0.5, 0.7, 1.0}
+  sphere = Sphere{Vector{0, 0, -1}, 0.5}
 )
 
 func check(e error, s string) {
@@ -10,6 +17,27 @@ func check(e error, s string) {
     fmt.Fprintf(os.Stderr, s, e)
     os.Exit(1)
   }
+}
+
+func colorize(r *Ray, sphere Sphere) Vector {
+  hit, record := sphere.Hit(r, 0.0, math.MaxFloat64)
+
+  if hit {
+    return record.Normal.AddScalar(1.0).MultiplyScalar(0.5)
+  }
+
+  // make unit vector so y is between -1.0 and 1.0
+  unitDirection := r.Direction.Normalize()
+
+  return gradient(&unitDirection)
+}
+
+func gradient(v *Vector) Vector {
+  // scale t to be between 0.0 and 1.0
+  t := 0.5 * (v.Y + 1.0)
+
+  // linear blend: blended_value = (1 - t) * white + t * blue
+  return white.MultiplyScalar(1.0 - t).Add(blue.MultiplyScalar(t))
 }
 
 func main() {
@@ -46,8 +74,8 @@ func main() {
 
       // direction = lowerLeft + (u * horizontal) + (v * vertical)
       direction := lowerLeft.Add(position)
-
-      rgb := Ray{origin, direction}.ColorWithSphere()
+      r := Ray{origin, direction}
+      rgb := colorize(&r, sphere)
 
       // get intensity of colors
       ir := int(color * rgb.X)
