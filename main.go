@@ -6,10 +6,18 @@ import (
   "math"
 )
 
+const (
+  color = 255.99
+)
+
 var (
   white = Vector{1.0, 1.0, 1.0}
   blue  = Vector{0.5, 0.7, 1.0}
   sphere = Sphere{Vector{0, 0, -1}, 0.5}
+  lowerLeft = Vector{-2.0, -1.0, -1.0}
+  horizontal = Vector{4.0, 0.0, 0.0}
+  vertical = Vector{0.0, 2.0, 0.0}
+  origin = Vector{0.0, 0.0, 0.0}
 )
 
 func check(e error, s string) {
@@ -40,13 +48,29 @@ func gradient(v *Vector) Vector {
   return white.MultiplyScalar(1.0 - t).Add(blue.MultiplyScalar(t))
 }
 
+func gradientSphere(x int, nx int, y int, ny int,f *os.File) error {
+  u := float64(x) / float64(nx)
+  v := float64(y) / float64(ny)
+
+  position := horizontal.MultiplyScalar(u).Add(vertical.MultiplyScalar(v))
+
+  direction := lowerLeft.Add(position)
+  r := Ray{origin, direction}
+  rgb := colorize(&r, sphere)
+
+  // get intensity of colors
+  ir := int(color * rgb.X)
+  ig := int(color * rgb.Y)
+  ib := int(color * rgb.Z)
+
+  _, err := fmt.Fprintf(f, "%d %d %d\n", ir, ig, ib)
+  return err
+}
+
 func main() {
   // size of image x and y
   nx := 400
   ny := 200
-
-  const color = 255.99
-
   f, err := os.Create("out.ppm")
 
   defer f.Close()
@@ -57,33 +81,11 @@ func main() {
   _, err = fmt.Fprintf(f, "P3\n%d %d\n255\n", nx, ny)
 
   check(err, "Error writting to file: %v\n")
-
-  lowerLeft := Vector{-2.0, -1.0, -1.0}
-  horizontal := Vector{4.0, 0.0, 0.0}
-  vertical := Vector{0.0, 2.0, 0.0}
-  origin := Vector{0.0, 0.0, 0.0}
-
   // writes each pixel with r/g/b values
   // from top left to bottom right
   for j := ny - 1; j >= 0; j-- {
     for i := 0; i < nx; i++ {
-      u := float64(i) / float64(nx)
-      v := float64(j) / float64(ny)
-
-      position := horizontal.MultiplyScalar(u).Add(vertical.MultiplyScalar(v))
-
-      // direction = lowerLeft + (u * horizontal) + (v * vertical)
-      direction := lowerLeft.Add(position)
-      r := Ray{origin, direction}
-      rgb := colorize(&r, sphere)
-
-      // get intensity of colors
-      ir := int(color * rgb.X)
-      ig := int(color * rgb.Y)
-      ib := int(color * rgb.Z)
-
-      _, err = fmt.Fprintf(f, "%d %d %d\n", ir, ig, ib)
-
+      err = gradientSphere(i, nx, j, ny, f)
       check(err, "Error writing to file: %v\n")
     }
   }
