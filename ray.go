@@ -1,5 +1,8 @@
 package main
 
+import (
+  "math"
+)
 
 type Ray struct {
   Origin, Direction Vector
@@ -28,7 +31,9 @@ func(r Ray) Color(sphere Sphere) Vector {
   white := Vector{1.0, 1.0, 1.0}
   blue := Vector{0.5, 0.7, 1.0}
   red := Vector{ 1.0, 0.0, 0.0 }
-  if(r.HitSphere(sphere)) {
+
+  hit, _ := sphere.Hit(&r, 0.0, math.MaxFloat64)
+  if(hit) {
     //a color
     return red
   }
