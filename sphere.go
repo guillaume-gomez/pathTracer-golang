@@ -1,10 +1,13 @@
 package main
 
+import (
+  "math"
+)
+
 type Sphere struct {
   Center Vector
   Radius float64
 }
-
 
 func(s *Sphere) Hit(r *Ray, tMin float64, tMax float64) (bool, HitRecord) {
   // a*a + 2ab + c
@@ -17,29 +20,27 @@ func(s *Sphere) Hit(r *Ray, tMin float64, tMax float64) (bool, HitRecord) {
   rec := HitRecord{}
   // Two solutions
   if discriminant > 0.0 {
-    twoA = 2 * a
-    sqrtDiscriminant := Sqrt(discriminant)
+    twoA := 2 * a
+    sqrtDiscriminant := math.Sqrt(discriminant)
     t := (-b + sqrtDiscriminant) / twoA
     // return the first solution
     if t < tMax && t > tMin {
-      rec := buildHitRecord(t, r, s);
+      rec = buildHitRecord(t, r, s);
       return true, rec
     }
     //return the second solution if t > tMax or t < tMin
-    t := (-b - sqrtDiscriminant)) / twoA
+    t = (-b - sqrtDiscriminant) / twoA
     if t < tMax && t > tMin {
-      rec := buildHitRecord(t, r, s);
+      rec = buildHitRecord(t, r, s);
       return true, rec
     }
-  }
   // Only one solution
-  else if discriminant == 0 {
+  } else if discriminant == 0.0 {
     t := -b / (2* a)
     if t < tMax && t > tMin {
-      rec := buildHitRecord(t, r, s);
+      rec = buildHitRecord(t, r, s);
       return true, rec
     }
   }
-  // no intersection
   return false, rec
 }
