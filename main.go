@@ -4,20 +4,24 @@ import (
   "fmt"
   "os"
   "math"
+  "math/rand"
 )
 
 const (
-  color = 255.99
+  nx = 400 // size of x
+  ny = 200 // size of y
+  ns = 100 // number of samples for aa
+  color  = 255.99
 )
 
 var (
   white = Vector{1.0, 1.0, 1.0}
   blue  = Vector{0.5, 0.7, 1.0}
+
+  camera = NewCamera()
+
   sphere = Sphere{Vector{0, 0, -1}, 0.5}
-  lowerLeft = Vector{-2.0, -1.0, -1.0}
-  horizontal = Vector{4.0, 0.0, 0.0}
-  vertical = Vector{0.0, 2.0, 0.0}
-  origin = Vector{0.0, 0.0, 0.0}
+  floor  = Sphere{Vector{0, -100.5, -1}, 100}
 )
 
 func check(e error, s string) {
@@ -49,14 +53,19 @@ func gradient(v *Vector) Vector {
 }
 
 func gradientSphere(x int, nx int, y int, ny int,f *os.File) error {
-  u := float64(x) / float64(nx)
-  v := float64(y) / float64(ny)
+  rgb := Vector{}
+  // sample rays for anti-aliasing
+    for s := 0; s < 100; s++ {
+      u := (float64(x) + rand.Float64()) / float64(nx)
+      v := (float64(y) + rand.Float64()) / float64(ny)
 
-  position := horizontal.MultiplyScalar(u).Add(vertical.MultiplyScalar(v))
+      r := camera.RayAt(u, v)
+      color := colorize(&r, sphere)
+      rgb = rgb.Add(color)
+    }
 
-  direction := lowerLeft.Add(position)
-  r := Ray{origin, direction}
-  rgb := colorize(&r, sphere)
+  // average
+  rgb = rgb.DivideScalar(float64(ns))
 
   // get intensity of colors
   ir := int(color * rgb.X)
@@ -68,9 +77,6 @@ func gradientSphere(x int, nx int, y int, ny int,f *os.File) error {
 }
 
 func main() {
-  // size of image x and y
-  nx := 400
-  ny := 200
   f, err := os.Create("out.ppm")
 
   defer f.Close()
