@@ -21,12 +21,14 @@ var (
 
   camera = p_.NewCamera()
 
-  sphere = p_.Sphere{ p_.Vector{ 0, 0, -1 }, 0.5 }
-  floor  = p_.Sphere{ p_.Vector{ 0, -100.5, -1 }, 100 }
+  sphere = p_.Sphere{p_.Vector{0, 0, -1}, 0.5}
+  floor  = p_.Sphere{p_.Vector{0, -100.5, -1}, 100}
+
+  world = p_.World{[]p_.Hitable{&sphere, &floor}}
 )
 
-func colorize(r *p_.Ray, sphere p_.Sphere) p_.Vector {
-  hit, record := sphere.Hit(r, 0.0, math.MaxFloat64)
+func colorize(r *p_.Ray, h p_.Hitable) p_.Vector {
+  hit, record := h.Hit(r, 0.0, math.MaxFloat64)
 
   if hit {
     return record.Normal.AddScalar(1.0).MultiplyScalar(0.5)
@@ -54,7 +56,7 @@ func GradientSphere(x int, nx int, y int, ny int,f *os.File) error {
       v := (float64(y) + rand.Float64()) / float64(ny)
 
       r := camera.RayAt(u, v)
-      color := colorize(&r, sphere)
+      color := colorize(&r, &world)
       rgb = rgb.Add(color)
     }
 
