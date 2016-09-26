@@ -22,14 +22,14 @@ func(s *Sphere) Hit(r *Ray, tMin float64, tMax float64) (bool, HitRecord) {
   if discriminant > 0.0 {
     twoA := 2 * a
     sqrtDiscriminant := math.Sqrt(discriminant)
-    t := (-b + sqrtDiscriminant) / twoA
+    t := (-b - sqrtDiscriminant) / twoA
     // return the first solution
     if t < tMax && t > tMin {
       rec = buildHitRecord(t, r, s);
       return true, rec
     }
     //return the second solution if t > tMax or t < tMin
-    t = (-b - sqrtDiscriminant) / twoA
+    t = (-b + sqrtDiscriminant) / twoA
     if t < tMax && t > tMin {
       rec = buildHitRecord(t, r, s);
       return true, rec
