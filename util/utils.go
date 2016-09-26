@@ -51,7 +51,7 @@ func gradient(v *p_.Vector) p_.Vector {
 func GradientSphere(x int, nx int, y int, ny int,f *os.File) error {
   rgb := p_.Vector{}
   // sample rays for anti-aliasing
-    for s := 0; s < 100; s++ {
+    for s := 0; s < ns; s++ {
       u := (float64(x) + rand.Float64()) / float64(nx)
       v := (float64(y) + rand.Float64()) / float64(ny)
 
