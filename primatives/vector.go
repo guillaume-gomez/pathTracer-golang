@@ -8,6 +8,8 @@ type Vector struct {
   X, Y, Z float64
 }
 
+var UnitVector = Vector{1, 1, 1}
+
 func (v Vector) Length() float64 {
   return math.Sqrt(v.X*v.X + v.Y*v.Y + v.Z*v.Z)
 }
@@ -45,4 +47,14 @@ func (v Vector) MultiplyScalar(t float64) Vector {
 
 func (v Vector) DivideScalar(t float64) Vector {
     return Vector{v.X / t, v.Y / t, v.Z / t}
+}
+
+func VectorInUnitSphere() Vector {
+  for {
+    r := Vector{rand.Float64(), rand.Float64(), rand.Float64()}
+    p := r.MultiplyScalar(2.0).Subtract(UnitVector)
+    if p.SquaredLength() >= 1.0 {
+      return p
+    }
+  }
 }
