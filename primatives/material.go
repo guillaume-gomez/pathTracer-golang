@@ -1,6 +1,6 @@
 package primatives
 
-type Material interphase {
-	Bounce(input Ray, hit Hit) (bool, Ray)
+type Material interface {
+	Bounce(input Ray, hit HitRecord) (bool, Ray)
 	Color() Vector
 }

@@ -2,6 +2,7 @@ package primatives
 
 import (
   "math"
+  "math/rand"
 )
 
 type Vector struct {
@@ -27,6 +28,9 @@ func (v Vector) Add(o Vector) Vector {
   return Vector{v.X + o.X, v.Y + o.Y, v.Z + o.Z}
 }
 
+func (v Vector) Mul(o Vector) Vector {
+  return Vector{v.X * o.X, v.Y * o.Y, v.Z * o.Z}
+}
 
 func (v Vector) Sub(o Vector) Vector {
   return Vector{v.X - o.X, v.Y - o.Y, v.Z - o.Z}
@@ -49,10 +53,14 @@ func (v Vector) DivideScalar(t float64) Vector {
     return Vector{v.X / t, v.Y / t, v.Z / t}
 }
 
+func(v Vector) SquaredLength() float64 {
+  return ( v.X * v.X + v.Y * v.Y + v.Z * v.Z)
+}
+
 func VectorInUnitSphere() Vector {
   for {
     r := Vector{rand.Float64(), rand.Float64(), rand.Float64()}
-    p := r.MultiplyScalar(2.0).Subtract(UnitVector)
+    p := r.MultiplyScalar(2.0).Sub(UnitVector)
     if p.SquaredLength() >= 1.0 {
       return p
     }

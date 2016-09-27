@@ -9,7 +9,7 @@ type Sphere struct {
   Radius float64
 }
 
-func(s *Sphere) Hit(r *Ray, tMin float64, tMax float64) (bool, HitRecord) {
+func(s *Sphere) Hit(r Ray, tMin float64, tMax float64) (bool, HitRecord) {
   // a*a + 2ab + c
   oc := r.Origin.Sub(s.Center)
   a := r.Direction.Dot(r.Direction)

@@ -4,7 +4,7 @@ type World struct {
   Elements []Hitable
 }
 
-func (w *World) Hit(r *Ray, tMin float64, tMax float64) (bool, HitRecord) {
+func (w *World) Hit(r Ray, tMin float64, tMax float64) (bool, HitRecord) {
   hitAnything := false
   closest := tMax
   record := HitRecord{}

@@ -23,24 +23,32 @@ var (
 
   sphere = p_.Sphere{p_.Vector{0, 0, -1}, 0.5}
   floor  = p_.Sphere{p_.Vector{0, -100.5, -1}, 100}
-
   world = p_.World{[]p_.Hitable{&sphere, &floor}}
+
 )
 
-func colorize(r *p_.Ray, h p_.Hitable) p_.Vector {
-  hit, record := h.Hit(r, 0.0, math.MaxFloat64)
-
+func colorize(r p_.Ray, world p_.Hitable, depth int) p_.Vector {
+  hit, record := world.Hit(r, 0.001, math.MaxFloat64)
   if hit {
-    return record.Normal.AddScalar(1.0).MultiplyScalar(0.5)
+    if depth < 50 {
+      fmt.Printf("toto")
+      bounced, bouncedRay := record.Bounce(r, record)
+      fmt.Printf("fdjkjf\n")
+      if bounced {
+        newColor := colorize(bouncedRay, world, depth+1)
+        return record.Material.Color().Mul(newColor)
+      }
+    }
+    return p_.Vector{}
   }
 
-  // make unit vector so y is between -1.0 and 1.0
-  unitDirection := r.Direction.Normalize()
-
-  return gradient(&unitDirection)
+  return gradient(r)
 }
 
-func gradient(v *p_.Vector) p_.Vector {
+
+func gradient(r p_.Ray) p_.Vector {
+  // make unit vector so y is between -1.0 and 1.0
+  v := r.Direction.Normalize()
   // scale t to be between 0.0 and 1.0
   t := 0.5 * (v.Y + 1.0)
 
@@ -56,7 +64,7 @@ func GradientSphere(x int, nx int, y int, ny int,f *os.File) error {
       v := (float64(y) + rand.Float64()) / float64(ny)
 
       r := camera.RayAt(u, v)
-      color := colorize(&r, &world)
+      color := colorize(r, &world, 0)
       rgb = rgb.Add(color)
     }
 

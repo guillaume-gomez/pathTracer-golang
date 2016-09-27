@@ -33,7 +33,7 @@ func(r Ray) Color(sphere Sphere) Vector {
   blue := Vector{0.5, 0.7, 1.0}
   red := Vector{ 1.0, 0.0, 0.0 }
 
-  hit, _ := sphere.Hit(&r, 0.0, math.MaxFloat64)
+  hit, _ := sphere.Hit(r, 0.0, math.MaxFloat64)
   if(hit) {
     //a color
     return red
