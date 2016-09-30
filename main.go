@@ -6,7 +6,7 @@ import (
   "math/rand"
   "os"
   "time"
-  p_ "./primatives"
+  p_ "./primitives"
 )
 
 const (
