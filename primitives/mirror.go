@@ -14,8 +14,3 @@ func (m Mirror) Bounce(input Ray, hit HitRecord) (bool, Ray) {
 func (m Mirror) Color() Vector {
   return m.C
 }
-
-func reflect(v Vector, n Vector) Vector {
-  b := 2 * v.Dot(n)
-  return v.Sub(n.MultiplyScalar(b))
-}
