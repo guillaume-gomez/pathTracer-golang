@@ -14,6 +14,7 @@ const (
   ny = 200 // size of y
   ns = 100 // number of samples for aa
   c  = 255.99
+  extension = "ppm"
 )
 
 var (
@@ -55,8 +56,8 @@ func gradient(r p_.Ray) p_.Vector {
   return white.MultiplyScalar(1.0 - t).Add(blue.MultiplyScalar(t))
 }
 
-func createFile() *os.File {
-  f, err := os.Create("out.ppm")
+func createFile(filename string) *os.File {
+  f, err := os.Create(filename)
   check(err, "Error opening file: %v\n")
 
   // http://netpbm.sourceforge.net/doc/ppm.html
@@ -92,7 +93,7 @@ func sample(world *p_.World, camera *p_.Camera, i, j int) p_.Vector {
   return rgb.DivideScalar(float64(ns))
 }
 
-func render(world *p_.World, camera *p_.Camera) {
+func render(world *p_.World, camera *p_.Camera, filename string) {
   ticker := time.NewTicker(time.Millisecond * 100)
 
   go func() {
@@ -102,7 +103,7 @@ func render(world *p_.World, camera *p_.Camera) {
     }
   }()
 
-  f := createFile()
+  f := createFile(filename)
   defer f.Close()
 
   start := time.Now()
@@ -123,10 +124,15 @@ func main() {
 
   world := p_.World{}
 
+  filename := "out." + extension
+  if len(os.Args) > 1 {
+    filename = os.Args[1] + "." + extension
+  }
+
   sphere := p_.Sphere{p_.Vector{0, 0, -1}, 0.5, p_.Lambertian{p_.Vector{0.8, 0.3, 0.3}}}
   front := p_.Sphere{p_.Vector{0, 0, 1}, 0.2, p_.Lambertian{p_.Vector{0.8, 0.3, 0.3}}}
   floor := p_.Sphere{p_.Vector{0, -100.5, -1}, 100, p_.Lambertian{p_.Vector{0.8, 0.8, 0.0}}}
-  left := p_.Sphere{p_.Vector{-1, 0, -1}, 0.5, p_.Mirror{p_.Vector{0.8, 0.8, 0.8}}}
+  left := p_.Sphere{p_.Vector{-1, 0, -1}, 0.5, p_.Metal{p_.Vector{0.8, 0.8, 0.8}, 0.3}}
   right := p_.Sphere{p_.Vector{1, 0, -1}, 0.5, p_.Mirror{p_.Vector{0.8, 0.6, 0.2}}}
 
   world.Add(&sphere)
@@ -135,5 +141,5 @@ func main() {
   world.Add(&left)
   world.Add(&right)
 
-  render(&world, camera)
+  render(&world, camera, filename)
 }
