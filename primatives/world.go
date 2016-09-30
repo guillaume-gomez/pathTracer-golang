@@ -1,7 +1,7 @@
 package primatives
 
 type World struct {
-  Elements []Hitable
+  elements []Hitable
 }
 
 func (w *World) Add(h Hitable) {
@@ -12,7 +12,7 @@ func (w *World) Hit(r Ray, tMin float64, tMax float64) (bool, HitRecord) {
   hitAnything := false
   closest := tMax
   record := HitRecord{}
-  for _, element := range w.Elements {
+  for _, element := range w.elements {
     hit, tempRecord := element.Hit(r, tMin, closest)
     if hit {
       hitAnything = true
