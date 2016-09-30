@@ -21,8 +21,8 @@ var (
 
   camera = p_.NewCamera()
 
-  sphere = p_.Sphere{p_.Vector{0, 0, -1}, 0.5}
-  floor  = p_.Sphere{p_.Vector{0, -100.5, -1}, 100}
+  sphere = p_.Sphere{p_.Vector{0, 0, -1}, 0.5, p_.Lambertian{p_.Vector{0.8, 0.3, 0.3}}}
+  floor  = p_.Sphere{p_.Vector{0, -100.5, -1}, 100, p_.Lambertian{p_.Vector{0.8, 0.8, 0.0}}}
   world = p_.World{[]p_.Hitable{&sphere, &floor}}
 
 )
@@ -31,9 +31,7 @@ func colorize(r p_.Ray, world p_.Hitable, depth int) p_.Vector {
   hit, record := world.Hit(r, 0.001, math.MaxFloat64)
   if hit {
     if depth < 50 {
-      fmt.Printf("toto")
       bounced, bouncedRay := record.Bounce(r, record)
-      fmt.Printf("fdjkjf\n")
       if bounced {
         newColor := colorize(bouncedRay, world, depth+1)
         return record.Material.Color().Mul(newColor)
