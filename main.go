@@ -125,9 +125,13 @@ func main() {
 
   sphere := p_.Sphere{p_.Vector{0, 0, -1}, 0.5, p_.Lambertian{p_.Vector{0.8, 0.3, 0.3}}}
   floor := p_.Sphere{p_.Vector{0, -100.5, -1}, 100, p_.Lambertian{p_.Vector{0.8, 0.8, 0.0}}}
+  left := p_.Sphere{p_.Vector{-1, 0, -1}, 0.5, p_.Mirror{p_.Vector{0.8, 0.8, 0.8}}}
+  right := p_.Sphere{p_.Vector{1, 0, -1}, 0.5, p_.Mirror{p_.Vector{0.8, 0.6, 0.2}}}
 
   world.Add(&sphere)
   world.Add(&floor)
+  world.Add(&left)
+  world.Add(&right)
 
   render(&world, camera)
 }
