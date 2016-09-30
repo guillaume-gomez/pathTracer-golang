@@ -5,10 +5,10 @@ type Lambertian struct {
 }
 
 func (l Lambertian) Bounce(input Ray, hit HitRecord) (bool, Ray) {
-	direction := hit.Normal.Add(VectorInUnitSphere())
-	return true, Ray{hit.P, direction}
+  direction := hit.Normal.Add(VectorInUnitSphere())
+  return true, Ray{hit.P, direction}
 }
 
 func (l Lambertian) Color() Vector {
-	return l.C
+  return l.C
 }
