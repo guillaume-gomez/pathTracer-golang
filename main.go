@@ -12,16 +12,6 @@ const (
   ny = 200 // size of y
 )
 
-var (
-  white = p_.Vector{ 1.0, 1.0, 1.0 }
-  blue  = p_.Vector{ 0.5, 0.7, 1.0 }
-
-  camera = p_.NewCamera()
-
-  sphere = p_.Sphere{ p_.Vector{ 0, 0, -1 }, 0.5 }
-  floor  = p_.Sphere{ p_.Vector{ 0, -100.5, -1 }, 100 }
-)
-
 func check(e error, s string) {
   if e != nil {
     fmt.Fprintf(os.Stderr, s, e)
