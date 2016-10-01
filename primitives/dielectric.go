@@ -9,11 +9,11 @@ type Dielectric struct {
   Index float64
 }
 
-func (d Dielectric) Color() Color {
-  return Color{1.0, 1.0, 1.0}
+func (d Dielectric) Color() Vector {
+  return Vector{1.0, 1.0, 1.0}
 }
 
-func (d Dielectric) Bounce(input Ray, hit Hit) (bool, Ray) {
+func (d Dielectric) Bounce(input Ray, hit HitRecord) (bool, Ray) {
   var outwardNormal Vector
   var niOverNt, cosine float64
 

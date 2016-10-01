@@ -66,3 +66,22 @@ func VectorInUnitSphere() Vector {
     }
   }
 }
+
+func (v Vector) Reflect(o Vector) Vector {
+  b := 2 * v.Dot(o)
+  return v.Sub(o.MultiplyScalar(b))
+}
+
+
+func (v Vector) Refract(o Vector, n float64) (bool, Vector) {
+  uv := v.Normalize()
+  uo := o.Normalize()
+  dt := uv.Dot(uo)
+  discriminant := 1.0 - (n * n * (1 - dt*dt))
+  if discriminant > 0 {
+    a := uv.Sub(o.MultiplyScalar(dt)).MultiplyScalar(n)
+    b := o.MultiplyScalar(math.Sqrt(discriminant))
+    return true, a.Sub(b)
+  }
+  return false, Vector{}
+}
