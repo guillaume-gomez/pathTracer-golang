@@ -120,8 +120,8 @@ func render(world *p_.World, camera *p_.Camera, filename string) {
 }
 
 func main() {
-  camera := p_.NewCameraWithPosition(0,0, 5, 90, float64(nx)/float64(ny))
-
+  camera := p_.NewCamera(90, float64(nx)/float64(ny))
+  camera.MoveTo(p_.Vector{0.2,0.0,0.0})
   world := p_.World{}
 
   filename := "out." + extension

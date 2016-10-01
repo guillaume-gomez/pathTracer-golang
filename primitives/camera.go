@@ -42,6 +42,10 @@ func (c *Camera) position(u float64, v float64) Vector {
   return horizontal.Add(vertical)
 }
 
+func(c* Camera) MoveTo(newPosition Vector) {
+  c.origin =  newPosition
+}
+
 func (c *Camera) direction(position Vector) Vector {
   return c.lowerLeft.Add(position)
 }
