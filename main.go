@@ -147,11 +147,7 @@ func main() {
   left := p_.NewSphere(-1, 0, -1, 0.5, p_.Dielectric{0.3})
   right := p_.NewSphere(1, 0, -1, 0.5, p_.Mirror{p_.Vector{0.8, 0.6, 0.2}})
 
-  world.Add(&sphere)
-  world.Add(&front)
-  world.Add(&floor)
-  world.Add(&left)
-  world.Add(&right)
+  world.AddAll(&sphere, &front, &floor, &left, &right)
 
   render(&world, &camera, filename)
   //slowlyMoveBack(world, camera, filename, 10, 1.0)
