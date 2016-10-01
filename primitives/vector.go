@@ -85,3 +85,10 @@ func (v Vector) Refract(o Vector, n float64) (bool, Vector) {
   }
   return false, Vector{}
 }
+
+func (v Vector) Cross(o Vector) Vector {
+  a := v.Y*o.Z - v.Z*o.Y
+  b := v.Z*o.X - v.X*o.Z
+  c := v.X*o.Y - v.Y*o.X
+  return Vector{a, b, c}
+}

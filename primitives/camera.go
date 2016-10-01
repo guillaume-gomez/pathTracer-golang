@@ -9,10 +9,11 @@ type Camera struct {
 }
 
 func NewCamera(vfov, aspect float64) Camera {
-  return NewCameraWithPosition(0.0, 0.0, 0.0, vfov, aspect)
+  return NewCameraWithPosition(Vector{0, 0, 0}, Vector{0, 0, -1}, Vector{0, 1, 0}, vfov, aspect)
 }
 
-func NewCameraWithPosition(x, y, z , vfov, aspect float64) Camera {
+
+func NewCameraWithPosition(lookFrom, lookAt, vUp Vector, vfov, aspect float64) Camera {
 
   theta := vfov * math.Pi / 180
   halfHeight := math.Tan(theta / 2)
@@ -20,10 +21,15 @@ func NewCameraWithPosition(x, y, z , vfov, aspect float64) Camera {
 
   c := Camera{}
 
-  c.lowerLeft = Vector{-halfWidth, -halfHeight, -1.0}
-  c.horizontal = Vector{2 * halfWidth, 0.0, 0.0}
-  c.vertical = Vector{0.0, 2 * halfHeight, 0.0}
-  c.origin = Vector{x, y, z}
+  c.origin = lookFrom
+
+  w := lookFrom.Sub(lookAt).Normalize()
+  u := vUp.Cross(w).Normalize()
+  v := w.Cross(u)
+
+  c.lowerLeft = c.origin.Sub(u.MultiplyScalar(halfWidth)).Sub(v.MultiplyScalar(halfHeight)).Sub(w)
+  c.horizontal = u.MultiplyScalar(2 * halfWidth)
+  c.vertical = v.MultiplyScalar(2 * halfHeight)
 
   return c
 }

@@ -11,8 +11,8 @@ import (
 )
 
 const (
-  nx = 800 // size of x
-  ny = 400 // size of y
+  nx = 400 // size of x
+  ny = 200 // size of y
   ns = 100 // number of samples for aa
   c  = 255.99
   extension = "ppm"
@@ -138,7 +138,7 @@ func main() {
 
   filename := "out." + extension
   if len(os.Args) > 1 {
-    filename = os.Args[1] //+ "." + extension
+    filename = os.Args[1] + "." + extension
   }
 
   sphere := p_.NewSphere(0, 0, -1, 0.5, p_.Lambertian{p_.Vector{0.8, 0.3, 0.3}})
@@ -153,6 +153,6 @@ func main() {
   world.Add(&left)
   world.Add(&right)
 
-  //render(&world, &camera, filename)
-  slowlyMoveBack(world, camera, filename, 10, 1.0)
+  render(&world, &camera, filename)
+  //slowlyMoveBack(world, camera, filename, 10, 1.0)
 }
