@@ -10,7 +10,7 @@ func buildHitRecord(t float64, ray Ray, sphere *Sphere) HitRecord {
   return HitRecord{
     T: t,
     Point: ray.Point(t),
-    Normal: (ray.Point(t).Sub(sphere.Center)).DivideScalar(sphere.Radius),
+    Normal: (ray.Point(t).Sub(sphere.Center())).DivideScalar(sphere.Radius()),
     Material: sphere.Material,
   }
 }

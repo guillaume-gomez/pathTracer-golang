@@ -17,20 +17,20 @@ func (d Dielectric) Bounce(input Ray, hit HitRecord) (bool, Ray) {
   var outwardNormal Vector
   var niOverNt, cosine float64
 
-  if input.Direction.Dot(hit.Normal) > 0 {
+  if input.Direction().Dot(hit.Normal) > 0 {
     outwardNormal = hit.Normal.MultiplyScalar(-1)
     niOverNt = d.Index
 
-    a := input.Direction.Dot(hit.Normal) * d.Index
-    b := input.Direction.Length()
+    a := input.Direction().Dot(hit.Normal) * d.Index
+    b := input.Direction().Length()
 
     cosine = a / b
   } else {
     outwardNormal = hit.Normal
     niOverNt = 1.0 / d.Index
 
-    a := input.Direction.Dot(hit.Normal) * d.Index
-    b := input.Direction.Length()
+    a := input.Direction().Dot(hit.Normal) * d.Index
+    b := input.Direction().Length()
 
     cosine = -a / b
   }
@@ -39,14 +39,14 @@ func (d Dielectric) Bounce(input Ray, hit HitRecord) (bool, Ray) {
   var refracted Vector
   var reflectProbability float64
 
-  if success, refracted = input.Direction.Refract(outwardNormal, niOverNt); success {
+  if success, refracted = input.Direction().Refract(outwardNormal, niOverNt); success {
     reflectProbability = d.schlick(cosine)
   } else {
     reflectProbability = 1.0
   }
 
   if rand.Float64() < reflectProbability {
-    reflected := input.Direction.Reflect(hit.Normal)
+    reflected := input.Direction().Reflect(hit.Normal)
     return true, Ray{hit.Point, reflected}
   }
 

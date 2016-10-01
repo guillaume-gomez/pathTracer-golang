@@ -5,9 +5,17 @@ import (
 )
 
 type Sphere struct {
-  Center Vector
-  Radius float64
+  center Vector
+  radius float64
   Material
+}
+
+func (s Sphere) Center() Vector {
+  return s.center
+}
+
+func (s Sphere) Radius() float64 {
+  return s.radius
 }
 
 func NewSphere(x, y, z, radius float64, m Material) Sphere {
@@ -16,10 +24,10 @@ func NewSphere(x, y, z, radius float64, m Material) Sphere {
 
 func(s *Sphere) Hit(r Ray, tMin float64, tMax float64) (bool, HitRecord) {
   // a*a + 2ab + c
-  oc := r.Origin.Sub(s.Center)
-  a := r.Direction.Dot(r.Direction)
-  b := 2 * oc.Dot(r.Direction)
-  c := oc.Dot(oc) - s.Radius * s.Radius
+  oc := r.Origin().Sub(s.Center())
+  a := r.Direction().Dot(r.Direction())
+  b := 2 * oc.Dot(r.Direction())
+  c := oc.Dot(oc) - s.Radius() * s.Radius()
   discriminant := b*b - 4*a*c
 
   rec := HitRecord{Material: s.Material}

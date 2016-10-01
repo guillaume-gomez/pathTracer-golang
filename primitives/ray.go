@@ -6,23 +6,31 @@ import (
 
 
 type Ray struct {
-  Origin, Direction Vector
+  origin, direction Vector
+}
+
+func(r Ray) Origin() Vector {
+  return r.origin
 }
 
 
+func(r Ray) Direction() Vector {
+  return r.direction
+}
+
 func (r Ray) Point(t float64) Vector {
   // p(t)  =  A + B * t
-  b := r.Direction.MultiplyScalar(t)
-  a := r.Origin
+  b := r.Direction().MultiplyScalar(t)
+  a := r.Origin()
   return a.Add(b)
 }
 
 func(r Ray) HitSphere(s Sphere) bool {
   // a*a + 2ab + c
-  oc := r.Origin.Sub(s.Center)
-  a := r.Direction.Dot(r.Direction)
-  b := 2 * oc.Dot(r.Direction)
-  c := oc.Dot(oc) - s.Radius * s.Radius
+  oc := r.Origin().Sub(s.Center())
+  a := r.Direction().Dot(r.Direction())
+  b := 2 * oc.Dot(r.Direction())
+  c := oc.Dot(oc) - s.Radius() * s.Radius()
   discriminant := b*b - 4*a*c
 
   return discriminant > 0
@@ -39,7 +47,7 @@ func(r Ray) Color(sphere Sphere) Vector {
     return red
   }
   // make unit vector so y is between -1.0 and 1.0
-  unitDirection := r.Direction.Normalize()
+  unitDirection := r.Direction().Normalize()
 
   // scale t to be between 0.0 and 1.0
   t := 0.5 * (unitDirection.Y + 1.0)
@@ -50,7 +58,7 @@ func(r Ray) Color(sphere Sphere) Vector {
 }
 
 func(r Ray) ColorWithSphere() Vector {
-  sphere := Sphere{Center: Vector{0, 0, -1}, Radius: 0.5}
+  sphere := Sphere{center: Vector{0, 0, -1}, radius: 0.5}
   return r.Color(sphere)
 }
 
