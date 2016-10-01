@@ -120,7 +120,7 @@ func render(world *p_.World, camera *p_.Camera, filename string) {
 }
 
 func main() {
-  camera := p_.NewCamera()
+  camera := p_.NewCamera(90, float64(nx)/float64(ny))
 
   world := p_.World{}
 
@@ -141,5 +141,5 @@ func main() {
   world.Add(&left)
   world.Add(&right)
 
-  render(&world, camera, filename)
+  render(&world, &camera, filename)
 }
