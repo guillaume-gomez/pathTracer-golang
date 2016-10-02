@@ -1,6 +1,7 @@
 package main
 
 import (
+  "flag"
   "fmt"
   "math"
   "math/rand"
@@ -11,12 +12,15 @@ import (
 )
 
 const (
-  nx = 400 // size of x
-  ny = 200 // size of y
-  ns = 100 // number of samples for aa
   c  = 255.99
-  extension = "ppm"
+  extension = ".ppm"
 )
+
+var config struct {
+  nx, ny, ns    int
+  aperture, fov float64
+  filename      string
+}
 
 var (
   white = p_.Vector{1.0, 1.0, 1.0}
@@ -62,13 +66,13 @@ func createFile(filename string) *os.File {
   check(err, "Error opening file: %v\n")
 
   // http://netpbm.sourceforge.net/doc/ppm.html
-  _, err = fmt.Fprintf(f, "P3\n%d %d\n255\n", nx, ny)
+  _, err = fmt.Fprintf(f, "P3\n%d %d\n255\n", config.nx, config.ny)
   check(err, "Error writting to file: %v\n")
   return f
 }
 
 func writeFile(f *os.File, rgb p_.Vector) {
-  // get intensity of colors
+  // get inteconfig.nsity of colors
   ir := int(c * math.Sqrt(rgb.X))
   ig := int(c * math.Sqrt(rgb.Y))
   ib := int(c * math.Sqrt(rgb.Z))
@@ -81,9 +85,9 @@ func writeFile(f *os.File, rgb p_.Vector) {
 func sample(world *p_.World, camera *p_.Camera, i, j int) p_.Vector {
   rgb := p_.Vector{}
 
-  for s := 0; s < ns; s++ {
-    u := (float64(i) + rand.Float64()) / float64(nx)
-    v := (float64(j) + rand.Float64()) / float64(ny)
+  for s := 0; s < config.ns; s++ {
+    u := (float64(i) + rand.Float64()) / float64(config.nx)
+    v := (float64(j) + rand.Float64()) / float64(config.ny)
 
     r := camera.RayAt(u, v)
     color := colorize(r, world, 0)
@@ -91,10 +95,10 @@ func sample(world *p_.World, camera *p_.Camera, i, j int) p_.Vector {
   }
 
   // average
-  return rgb.DivideScalar(float64(ns))
+  return rgb.DivideScalar(float64(config.ns))
 }
 
-func render(world *p_.World, camera *p_.Camera, filename string) {
+func render(world *p_.World, camera *p_.Camera, file string) {
   ticker := time.NewTicker(time.Millisecond * 100)
 
   go func() {
@@ -104,13 +108,13 @@ func render(world *p_.World, camera *p_.Camera, filename string) {
     }
   }()
 
-  f := createFile(filename)
+  f := createFile(file)
   defer f.Close()
 
   start := time.Now()
 
-  for j := ny - 1; j >= 0; j-- {
-    for i := 0; i < nx; i++ {
+  for j := config.ny - 1; j >= 0; j-- {
+    for i := 0; i < config.nx; i++ {
       rgb := sample(world, camera, i, j)
       writeFile(f, rgb)
     }
@@ -120,10 +124,10 @@ func render(world *p_.World, camera *p_.Camera, filename string) {
   fmt.Printf("\nDone.\nElapsed: %v\n", time.Since(start))
 }
 
-func slowlyMoveBack(world p_.World, camera p_.Camera, filename string, nbImage int, step float64 ) {
+func slowlyMoveBack(world p_.World, camera p_.Camera, nbImage int, step float64 ) {
   imageIndex := 0
   for imageIndex < nbImage {
-    file := filename + "_" + strconv.Itoa(imageIndex) + "." + extension
+    file := config.filename + "_" + strconv.Itoa(imageIndex) + "." + extension
     fmt.Printf("Begin computing : %s\n", file)
     render(&world, &camera, file)
     fmt.Print("--End--\n")
@@ -133,13 +137,20 @@ func slowlyMoveBack(world p_.World, camera p_.Camera, filename string, nbImage i
 }
 
 func main() {
-  camera := p_.NewCamera(90, float64(nx)/float64(ny))
-  world := p_.World{}
+  // flag.Float64Var(&lookFrom.X, "x", 10, "look from X")
+  // flag.Float64Var(&lookFrom.Y, "y", 4, "look from Y")
+  // flag.Float64Var(&lookFrom.Z, "z", 6, "look from Z")
 
-  filename := "out." + extension
-  if len(os.Args) > 1 {
-    filename = os.Args[1] + "." + extension
-  }
+  flag.Float64Var(&config.fov, "fov", 90.0, "vertical field of view (degrees)")
+  flag.IntVar(&config.nx, "width", 400, "width of image")
+  flag.IntVar(&config.ny, "height", 200, "height of image")
+  flag.IntVar(&config.ns, "samples", 100, "number of samples for anti-aliasing")
+  flag.StringVar(&config.filename, "out", "out", "output filename")
+
+  flag.Parse()
+
+  camera := p_.NewCamera(config.fov, float64(config.nx)/float64(config.ny))
+  world := p_.World{}
 
   sphere := p_.NewSphere(0, 0, -1, 0.5, p_.Lambertian{p_.Vector{0.8, 0.3, 0.3}})
   front := p_.NewSphere(0, 0, 1, 0.2, p_.Lambertian{p_.Vector{0.8, 0.3, 0.3}})
@@ -149,6 +160,6 @@ func main() {
 
   world.AddAll(&sphere, &front, &floor, &left, &right)
 
-  render(&world, &camera, filename)
+  render(&world, &camera, config.filename + extension)
   //slowlyMoveBack(world, camera, filename, 10, 1.0)
 }
