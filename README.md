@@ -3,12 +3,13 @@ from the tutorial : http://www.markphelps.me/2016/03/15/writing-a-ray-tracer-in-
 
 ![Game](preview.png "ScreenShot")
 
-## How to use it
-  - `fov=90`: vertical field of view (degrees)
-  - `height=200`: height of image
-  - `out="out"`: output filename
-  - `samples=100`: number of samples for anti-aliasing
-  - `width=400`: width of image
+## How to use it : 
+Command line parameters: 
+  - `--fov`: vertical field of view (degrees) (default:90)
+  - `--height`: height of image (default:200)
+  - `--out`: output filename  (default:'out')
+  - `--samples`: number of samples for anti-aliasing (default:100)
+  - `--width`: width of image (default:400)
   
   
  ## Work in progress
