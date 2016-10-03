@@ -3,7 +3,7 @@ from the tutorial : http://www.markphelps.me/2016/03/15/writing-a-ray-tracer-in-
 
 ![Game](preview.png "ScreenShot")
 
-## How to use it : 
+## How to use it
 Command line parameters: 
   - `--fov`: vertical field of view (degrees) (default:90)
   - `--height`: height of image (default:200)
