@@ -24,3 +24,8 @@ func (b Box) Height() float64 {
 func (b Box) Length() float64 {
   return b.size.Z
 }
+
+
+func(b * Box) Hit(r Ray, tMin float64, tMax float64) (bool, HitRecord) {
+  //TODO
+}
