@@ -136,8 +136,8 @@ func slowlyMoveBack(world p_.World, camera p_.Camera, nbImage int, step float64 
   }
 }
 
-func main() {
-  // flag.Float64Var(&lookFrom.X, "x", 10, "look from X")
+func initCommandLineParams() {
+   // flag.Float64Var(&lookFrom.X, "x", 10, "look from X")
   // flag.Float64Var(&lookFrom.Y, "y", 4, "look from Y")
   // flag.Float64Var(&lookFrom.Z, "z", 6, "look from Z")
 
@@ -146,8 +146,12 @@ func main() {
   flag.IntVar(&config.ny, "height", 200, "height of image")
   flag.IntVar(&config.ns, "samples", 100, "number of samples for anti-aliasing")
   flag.StringVar(&config.filename, "out", "out", "output filename")
-
   flag.Parse()
+
+}
+
+func main() {
+  initCommandLineParams()
   aperture := 2.0
 
 
