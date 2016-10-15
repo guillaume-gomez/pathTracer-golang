@@ -148,17 +148,19 @@ func main() {
   flag.StringVar(&config.filename, "out", "out", "output filename")
 
   flag.Parse()
+  aperture := 2.0
 
-  camera := p_.NewCamera(config.fov, float64(config.nx)/float64(config.ny))
+
+  camera := p_.NewCameraCentered(90, float64(config.nx)/float64(config.ny), aperture)
   world := p_.World{}
 
   sphere := p_.NewSphere(0, 0, -1, 0.5, p_.Lambertian{p_.Vector{0.8, 0.3, 0.3}})
-  front := p_.NewSphere(0, 0, 1, 0.2, p_.Lambertian{p_.Vector{0.8, 0.3, 0.3}})
   floor := p_.NewSphere(0, -100.5, -1, 100, p_.Lambertian{p_.Vector{0.8, 0.8, 0.0}})
-  left := p_.NewSphere(-1, 0, -1, 0.5, p_.Dielectric{0.3})
-  right := p_.NewSphere(1, 0, -1, 0.5, p_.Mirror{p_.Vector{0.8, 0.6, 0.2}})
-
-  world.AddAll(&sphere, &front, &floor, &left, &right)
+  front := p_.NewSphere(0, 0, 1, 0.2, p_.Lambertian{p_.Vector{0.8, 0.3, 0.3}})
+  metal := p_.NewSphere(1, 0, -1, 0.5, p_.Metal{p_.Vector{0.8, 0.6, 0.2}, 0.3})
+  glass := p_.NewSphere(-1, 0, -1, 0.5, p_.Dielectric{1.5})
+  bubble := p_.NewSphere(-1, 0, -1, -0.45, p_.Dielectric{1.5})
+  world.AddAll(&sphere, &floor, &front, &metal, &glass, &bubble)
 
   render(&world, &camera, config.filename + extension)
   //slowlyMoveBack(world, camera, filename, 10, 1.0)
