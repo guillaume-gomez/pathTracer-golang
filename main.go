@@ -151,7 +151,7 @@ func main() {
   aperture := 2.0
 
 
-  camera := p_.NewCameraCentered(90, float64(config.nx)/float64(config.ny), aperture)
+  camera := p_.NewCameraCentered(config.fov, float64(config.nx)/float64(config.ny), aperture)
   world := p_.World{}
 
   sphere := p_.NewSphere(0, 0, -1, 0.5, p_.Lambertian{p_.Vector{0.8, 0.3, 0.3}})
