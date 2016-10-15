@@ -20,6 +20,7 @@ var config struct {
   nx, ny, ns    int
   aperture, fov float64
   filename      string
+  lookFrom      p_.Vector
 }
 
 var (
@@ -137,9 +138,9 @@ func slowlyMoveBack(world p_.World, camera p_.Camera, nbImage int, step float64 
 }
 
 func initCommandLineParams() {
-   // flag.Float64Var(&lookFrom.X, "x", 10, "look from X")
-  // flag.Float64Var(&lookFrom.Y, "y", 4, "look from Y")
-  // flag.Float64Var(&lookFrom.Z, "z", 6, "look from Z")
+  flag.Float64Var(&config.lookFrom.X, "x", 0, "look from X")
+  flag.Float64Var(&config.lookFrom.Y, "y", 0, "look from Y")
+  flag.Float64Var(&config.lookFrom.Z, "z", 0, "look from Z")
 
   flag.Float64Var(&config.fov, "fov", 90.0, "vertical field of view (degrees)")
   flag.IntVar(&config.nx, "width", 400, "width of image")
@@ -153,9 +154,11 @@ func initCommandLineParams() {
 func main() {
   initCommandLineParams()
   aperture := 2.0
+  lookAt := p_.Vector{0,0,-1}
+  focusDist := config.lookFrom.Sub(lookAt).Length()
 
 
-  camera := p_.NewCameraCentered(config.fov, float64(config.nx)/float64(config.ny), aperture)
+  camera := p_.NewCamera(config.lookFrom, lookAt, p_.Vector{0,1,0}, config.fov, float64(config.nx)/float64(config.ny), aperture, focusDist)
   world := p_.World{}
 
   sphere := p_.NewSphere(0, 0, -1, 0.5, p_.Lambertian{p_.Vector{0.8, 0.3, 0.3}})
