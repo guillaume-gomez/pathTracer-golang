@@ -26,6 +26,7 @@ func (b Box) Length() float64 {
 }
 
 
-func(b * Box) Hit(r Ray, tMin float64, tMax float64) (bool, HitRecord) {
-  //TODO
-}
+// func(b * Box) Hit(r Ray, tMin float64, tMax float64) (bool, HitRecord) {
+//   //TODO
+//   return false, 
+// }
