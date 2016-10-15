@@ -12,8 +12,9 @@ Command line parameters:
   - `--width`: width of image (default:400)
   
   
- ## Work in progress
-  ### Next steps
-    - Add new materials
-    - Add new geometries (like cube, pyramides, thor, ...)
+## Work in progress
+
+### Next steps
+   - Add new materials
+   - Add new geometries (like cube, pyramides, thor, ...)
   
