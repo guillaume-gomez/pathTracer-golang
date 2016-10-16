@@ -1,7 +1,7 @@
 package primitives
 
 type Box struct {
-  position, size Vector
+  position, size, a, b Vector
   Material
 }
 
@@ -23,6 +23,14 @@ func (b Box) Height() float64 {
 
 func (b Box) Length() float64 {
   return b.size.Z
+}
+
+func (b Box) A() Vector {
+  return a
+}
+
+func (b Box) B() Vector {
+  return b
 }
 
 
