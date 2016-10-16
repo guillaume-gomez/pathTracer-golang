@@ -38,20 +38,20 @@ func(s *Sphere) Hit(r Ray, tMin float64, tMax float64) (bool, HitRecord) {
     t := (-b - sqrtDiscriminant) / twoA
     // return the first solution
     if t < tMax && t > tMin {
-      rec = buildHitRecord(t, r, s);
+      rec = buildHitRecordFromSphere(t, r, s);
       return true, rec
     }
     //return the second solution if t > tMax or t < tMin
     t = (-b + sqrtDiscriminant) / twoA
     if t < tMax && t > tMin {
-      rec = buildHitRecord(t, r, s);
+      rec = buildHitRecordFromSphere(t, r, s);
       return true, rec
     }
   // Only one solution
   } else if discriminant == 0.0 {
     t := -b / (2* a)
     if t < tMax && t > tMin {
-      rec = buildHitRecord(t, r, s);
+      rec = buildHitRecordFromSphere(t, r, s);
       return true, rec
     }
   }

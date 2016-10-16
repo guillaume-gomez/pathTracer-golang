@@ -6,7 +6,7 @@ type HitRecord struct {
   Material
 }
 
-func buildHitRecord(t float64, ray Ray, sphere *Sphere) HitRecord {
+func buildHitRecordFromSphere(t float64, ray Ray, sphere *Sphere) HitRecord {
   return HitRecord{
     T: t,
     Point: ray.Point(t),
