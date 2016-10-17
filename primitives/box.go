@@ -5,37 +5,37 @@ type Box struct {
   Material
 }
 
-func (b Box) Position() Vector {
-  return b.position
+func (box Box) Position() Vector {
+  return box.position
 }
 
-func (b Box) Size() Vector {
-  return b.size
+func (box Box) Size() Vector {
+  return box.size
 }
 
-func (b Box) Width() float64 {
-  return b.size.X
+func (box Box) Width() float64 {
+  return box.size.X
 }
 
-func (b Box) Height() float64 {
-  return b.size.Y
+func (box Box) Height() float64 {
+  return box.size.Y
 }
 
-func (b Box) Length() float64 {
-  return b.size.Z
+func (box Box) Length() float64 {
+  return box.size.Z
 }
 
-func (b Box) A() Vector {
-  return a
+func (box Box) A() Vector {
+  return box.a
 }
 
-func (b Box) B() Vector {
-  return b
+func (box Box) B() Vector {
+  return box.b
 }
 
 
- func(b * Box) Hit(r Ray, tMin float64, tMax float64) (bool, HitRecord) {
-  rec := HitRecord{Material: b.Material}
+ func(box * Box) Hit(r Ray, tMin float64, tMax float64) (bool, HitRecord) {
+  rec := HitRecord{Material: box.Material}
 
   txmin := (box.A().X - r.Origin().X) / r.Direction().X
   txmax := (box.B().X - r.Origin().X) / r.Direction().X
@@ -67,8 +67,8 @@ func (b Box) B() Vector {
     txmax = tymax
   }
 
-  tzmin := (box.a.z - r.Origin().Z) / r.Direction().Z
-  tzmax := (box.b.z - r.Origin().Z) / r.Direction().Z
+  tzmin := (box.A().Z - r.Origin().Z) / r.Direction().Z
+  tzmax := (box.B().Z - r.Origin().Z) / r.Direction().Z
 
   if (tzmin > tzmax) {
     swap := tzmin
@@ -87,13 +87,13 @@ func (b Box) B() Vector {
   if (tzmax < txmax) {
     txmax = tzmax
   }
-  t := tmin;
+  t := txmin;
   if (t < 0) {
-    t = tmax;
+    t = txmax;
     if (t < 0 || t < tMin || t > tMax) {
       return false, rec
     }
   }
-  rec = buildHitRecordFromBox(t, r, b)
+  rec = buildHitRecordFromBox(t, r, box)
   return true, rec
  }
