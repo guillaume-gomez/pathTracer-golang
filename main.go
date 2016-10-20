@@ -169,6 +169,9 @@ func main() {
   bubble := p_.NewSphere(-1, 0, -1, -0.45, p_.Dielectric{1.5})
   world.AddAll(&sphere, &floor, &front, &metal, &glass, &bubble)
 
+  fmt.Printf("\nRendering %d x %d pixel scene with %d objects:", config.nx, config.ny, 6)
+  fmt.Printf("\n[%d samples/pixel, %.2f° fov, %.2f aperture]\n", config.ns, config.fov, aperture)
+
   render(&world, &camera, config.filename + extension)
   //slowlyMoveBack(world, camera, filename, 10, 1.0)
 }
