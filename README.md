@@ -17,4 +17,4 @@ Command line parameters:
 ### Next steps
    - Add new materials
    - Add new geometries (like cube, pyramides, thor, ...)
-  
+   - Give some information about the process 
