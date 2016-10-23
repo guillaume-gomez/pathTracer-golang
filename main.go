@@ -8,12 +8,14 @@ import (
   "strconv"
   "os"
   "time"
+  "strings"
   p_ "./primitives"
 )
 
 const (
   c  = 255.99
   extension = ".ppm"
+  progressBarWidth = 80
 )
 
 var config struct {
