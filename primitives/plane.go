@@ -22,7 +22,7 @@ func NewPlane(point, normal Vector, m Material) Plane {
 func(p *Plane) Hit(ray Ray, tMin float64, tMax float64) (bool, HitRecord) {
   rec := HitRecord{Material: p.Material}
   // assuming vectors are all normalized
-  denom := ray.Direction().Normalize().Dot(p.Normal().Normalize());
+  denom := ray.Direction().Normalize().Dot(p.Normal().Normalize())
   if (denom > 1e-6) {
     pbVector :=  ray.Origin().Sub(p.Point());
     t := (pbVector.Dot(p.Normal())) / denom
