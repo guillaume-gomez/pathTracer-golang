@@ -15,6 +15,10 @@ func(p Plane) Normal() Vector {
   return p.normal
 }
 
+func NewPlane(point, normal Vector, m Material) Plane {
+  return Plane{point, normal, m}
+}
+
 func(p *Plane) Hit(ray Ray, tMin float64, tMax float64) (bool, HitRecord) {
   rec := HitRecord{Material: p.Material}
   // assuming vectors are all normalized
