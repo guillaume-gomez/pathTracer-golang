@@ -36,12 +36,12 @@ func(r Ray) HitSphere(s Sphere) bool {
   return discriminant > 0
 }
 
-func(r Ray) Color(sphere Sphere) Vector {
+func(r Ray) Color(hitable Hitable) Vector {
   white := Vector{1.0, 1.0, 1.0}
   blue := Vector{0.5, 0.7, 1.0}
   red := Vector{ 1.0, 0.0, 0.0 }
 
-  hit, _ := sphere.Hit(r, 0.0, math.MaxFloat64)
+  hit, _ := hitable.Hit(r, 0.0, math.MaxFloat64)
   if(hit) {
     //a color
     return red
@@ -58,7 +58,7 @@ func(r Ray) Color(sphere Sphere) Vector {
 }
 
 func(r Ray) ColorWithSphere() Vector {
-  sphere := Sphere{center: Vector{0, 0, -1}, radius: 0.5}
-  return r.Color(sphere)
+  sphere := Sphere{center: Vector{0, 0, -1}, radius: 0.5, Material: Lambertian{Vector{0.8, 0.3, 0.3}}}
+  return r.Color(&sphere)
 }
 
