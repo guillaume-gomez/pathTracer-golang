@@ -1,7 +1,7 @@
 # pathTracer-golang
 from the tutorial : http://www.markphelps.me/2016/03/15/writing-a-ray-tracer-in-go.html
 
-![Game](preview.png "ScreenShot")
+![Example](preview.png "ScreenShot")
 
 ## How to use it
 Command line parameters: 
@@ -10,6 +10,7 @@ Command line parameters:
   - `--out`: output filename  (default:'out')
   - `--samples`: number of samples for anti-aliasing (default:100)
   - `--width`: width of image (default:400)
+  - `--debug`: if true render only primitives (no light) (default:false)
   
   
 ## Work in progress
