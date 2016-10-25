@@ -29,7 +29,7 @@ func(p *Plane) Hit(ray Ray, tMin float64, tMax float64) (bool, HitRecord) {
     if( t >= 0 && t > tMin && t < tMax) {
       rec.T = t
       rec.Point = ray.Point(t)
-      rec.Normal = p.Normal()
+      rec.Normal = p.Normal().Invert()
       return true, rec
     }
     return false, rec
