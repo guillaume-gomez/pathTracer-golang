@@ -9,6 +9,7 @@ import (
   "os"
   "time"
   "strings"
+  s_ "./rendering"
   p_ "./primitives"
 )
 
@@ -23,6 +24,7 @@ var config struct {
   aperture, fov float64
   filename      string
   lookFrom      p_.Vector
+  debug         bool
 }
 
 var (
@@ -48,6 +50,15 @@ func colorize(r p_.Ray, world p_.Hitable, depth int) p_.Vector {
       }
     }
     return p_.Vector{}
+  }
+
+  return gradient(r)
+}
+
+func colorizeSimplified(r p_.Ray, world p_.Hitable, depth int) p_.Vector {
+  hit, _ := world.Hit(r, 0.001, math.MaxFloat64)
+  if hit {
+    return p_.Vector{1,0,0} //red
   }
 
   return gradient(r)
@@ -93,7 +104,12 @@ func sample(world *p_.World, camera *p_.Camera, i, j int) p_.Vector {
     v := (float64(j) + rand.Float64()) / float64(config.ny)
 
     r := camera.RayAt(u, v)
-    color := colorize(r, world, 0)
+    color := p_.Vector{}
+    if config.debug {
+      color = colorizeSimplified(r, world, 0)
+    } else {
+      color = colorize(r, world, 0)
+    }
     rgb = rgb.Add(color)
   }
 
@@ -149,6 +165,7 @@ func initCommandLineParams() {
   flag.IntVar(&config.ny, "height", 200, "height of image")
   flag.IntVar(&config.ns, "samples", 100, "number of samples for anti-aliasing")
   flag.StringVar(&config.filename, "out", "out", "output filename")
+  flag.BoolVar(&config.debug, "debug", false, "debug true")
   flag.Parse()
 
 }
@@ -161,15 +178,7 @@ func main() {
 
 
   camera := p_.NewCamera(config.lookFrom, lookAt, p_.Vector{0,1,0}, config.fov, float64(config.nx)/float64(config.ny), aperture, focusDist)
-  world := p_.World{}
-
-  sphere := p_.NewSphere(0, 0, -1, 0.5, p_.Lambertian{p_.Vector{0.8, 0.3, 0.3}})
-  floor := p_.NewSphere(0, -100.5, -1, 100, p_.Lambertian{p_.Vector{0.8, 0.8, 0.0}})
-  front := p_.NewSphere(0, 0, 1, 0.2, p_.Lambertian{p_.Vector{0.8, 0.3, 0.3}})
-  metal := p_.NewSphere(1, 0, -1, 0.5, p_.Metal{p_.Vector{0.8, 0.6, 0.2}, 0.3})
-  glass := p_.NewSphere(-1, 0, -1, 0.5, p_.Dielectric{1.5})
-  bubble := p_.NewSphere(-1, 0, -1, -0.45, p_.Dielectric{1.5})
-  world.AddAll(&sphere, &floor, &front, &metal, &glass, &bubble)
+  world := s_.OriginalScene()
 
   fmt.Printf("\nRendering %d x %d pixel scene with %d objects:", config.nx, config.ny, 6)
   fmt.Printf("\n[%d samples/pixel, %.2f° fov, %.2f aperture]\n", config.ns, config.fov, aperture)
