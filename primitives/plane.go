@@ -36,7 +36,3 @@ func(p *Plane) Hit(ray Ray, tMin float64, tMax float64) (bool, HitRecord) {
   }
   return false, rec
 }
-
-func(p *Plane) Color() {
-  //TODO
-}
