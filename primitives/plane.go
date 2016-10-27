@@ -37,6 +37,16 @@ func(p *Plane) Hit(ray Ray, tMin float64, tMax float64) (bool, HitRecord) {
   return false, rec
 }
 
-func(p *Plane) Color() {
-  //TODO
+func(p *Plane) HitAndGetT(ray Ray, tMin float64, tMax float64) (bool, float64) {
+  // assuming vectors are all normalized
+  denom := ray.Direction().Normalize().Dot(p.Normal().Normalize())
+  if (denom > 1e-6) {
+    pbVector :=  ray.Origin().Sub(p.Point());
+    t := (pbVector.Dot(p.Normal())) / denom
+    if( t >= 0 && t > tMin && t < tMax) {
+      return true, t
+    }
+    return false, 0
+  }
+  return false, 0
 }

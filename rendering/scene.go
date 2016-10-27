@@ -12,6 +12,13 @@ func PlaneScene() p_.World {
   return world
 }
 
+func DiskScene() p_.World {
+  world := p_.World{}
+  disk := p_.NewDisk(p_.Vector{0, 0, 45}, p_.Vector{0,0,-1}, p_.Lambertian{p_.Vector{0.1, 0.3, 0.8}}, 100)
+  world.AddAll(&disk)
+  return world
+}
+
 func OriginalScene() p_.World {	
   world  := p_.World{}
   sphere := p_.NewSphere(0, 0, -1, 0.5, p_.Lambertian{p_.Vector{0.8, 0.3, 0.3}})
