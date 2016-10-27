@@ -14,7 +14,7 @@ func PlaneScene() p_.World {
 
 func DiskScene() p_.World {
   world := p_.World{}
-  disk := p_.NewDisk(p_.Vector{0, 0, 40}, p_.Vector{4,5,-1}, p_.Lambertian{p_.Vector{0.1, 0.3, 0.8}}, 200)
+  disk := p_.NewDisk(p_.Vector{0, 0, 45}, p_.Vector{0,0,-1}, p_.Lambertian{p_.Vector{0.1, 0.3, 0.8}}, 100)
   world.AddAll(&disk)
   return world
 }
