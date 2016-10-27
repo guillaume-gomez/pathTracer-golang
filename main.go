@@ -178,7 +178,7 @@ func main() {
 
 
   camera := p_.NewCamera(config.lookFrom, lookAt, p_.Vector{0,1,0}, config.fov, float64(config.nx)/float64(config.ny), aperture, focusDist)
-  world := s_.DiskScene()
+  world := s_.OriginalScene()
 
   fmt.Printf("\nRendering %d x %d pixel scene with %d objects:", config.nx, config.ny, 6)
   fmt.Printf("\n[%d samples/pixel, %.2f° fov, %.2f aperture]\n", config.ns, config.fov, aperture)
