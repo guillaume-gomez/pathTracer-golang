@@ -8,18 +8,23 @@ import (
   "strconv"
   "os"
   "time"
+  "strings"
+  s_ "./rendering"
   p_ "./primitives"
 )
 
 const (
   c  = 255.99
   extension = ".ppm"
+  progressBarWidth = 80
 )
 
 var config struct {
   nx, ny, ns    int
   aperture, fov float64
   filename      string
+  lookFrom      p_.Vector
+  debug         bool
 }
 
 var (
@@ -45,6 +50,15 @@ func colorize(r p_.Ray, world p_.Hitable, depth int) p_.Vector {
       }
     }
     return p_.Vector{}
+  }
+
+  return gradient(r)
+}
+
+func colorizeSimplified(r p_.Ray, world p_.Hitable, depth int) p_.Vector {
+  hit, _ := world.Hit(r, 0.001, math.MaxFloat64)
+  if hit {
+    return p_.Vector{1,0,0} //red
   }
 
   return gradient(r)
@@ -90,7 +104,12 @@ func sample(world *p_.World, camera *p_.Camera, i, j int) p_.Vector {
     v := (float64(j) + rand.Float64()) / float64(config.ny)
 
     r := camera.RayAt(u, v)
-    color := colorize(r, world, 0)
+    color := p_.Vector{}
+    if config.debug {
+      color = colorizeSimplified(r, world, 0)
+    } else {
+      color = colorize(r, world, 0)
+    }
     rgb = rgb.Add(color)
   }
 
@@ -136,30 +155,47 @@ func slowlyMoveBack(world p_.World, camera p_.Camera, nbImage int, step float64 
   }
 }
 
-func main() {
-  // flag.Float64Var(&lookFrom.X, "x", 10, "look from X")
-  // flag.Float64Var(&lookFrom.Y, "y", 4, "look from Y")
-  // flag.Float64Var(&lookFrom.Z, "z", 6, "look from Z")
+func initCommandLineParams() {
+  flag.Float64Var(&config.lookFrom.X, "x", 0, "look from X")
+  flag.Float64Var(&config.lookFrom.Y, "y", 0, "look from Y")
+  flag.Float64Var(&config.lookFrom.Z, "z", 0, "look from Z")
 
   flag.Float64Var(&config.fov, "fov", 90.0, "vertical field of view (degrees)")
   flag.IntVar(&config.nx, "width", 400, "width of image")
   flag.IntVar(&config.ny, "height", 200, "height of image")
   flag.IntVar(&config.ns, "samples", 100, "number of samples for anti-aliasing")
   flag.StringVar(&config.filename, "out", "out", "output filename")
-
+  flag.BoolVar(&config.debug, "debug", false, "debug true")
   flag.Parse()
 
-  camera := p_.NewCamera(config.fov, float64(config.nx)/float64(config.ny))
-  world := p_.World{}
+}
 
-  sphere := p_.NewSphere(0, 0, -1, 0.5, p_.Lambertian{p_.Vector{0.8, 0.3, 0.3}})
-  front := p_.NewSphere(0, 0, 1, 0.2, p_.Lambertian{p_.Vector{0.8, 0.3, 0.3}})
-  floor := p_.NewSphere(0, -100.5, -1, 100, p_.Lambertian{p_.Vector{0.8, 0.8, 0.0}})
-  left := p_.NewSphere(-1, 0, -1, 0.5, p_.Dielectric{0.3})
-  right := p_.NewSphere(1, 0, -1, 0.5, p_.Mirror{p_.Vector{0.8, 0.6, 0.2}})
+func main() {
+  initCommandLineParams()
+  aperture := 2.0
+  lookAt := p_.Vector{0,0,-1}
+  focusDist := config.lookFrom.Sub(lookAt).Length()
 
-  world.AddAll(&sphere, &front, &floor, &left, &right)
+
+  camera := p_.NewCamera(config.lookFrom, lookAt, p_.Vector{0,1,0}, config.fov, float64(config.nx)/float64(config.ny), aperture, focusDist)
+  world := s_.OriginalScene()
+
+  fmt.Printf("\nRendering %d x %d pixel scene with %d objects:", config.nx, config.ny, 6)
+  fmt.Printf("\n[%d samples/pixel, %.2f° fov, %.2f aperture]\n", config.ns, config.fov, aperture)
 
   render(&world, &camera, config.filename + extension)
   //slowlyMoveBack(world, camera, filename, 10, 1.0)
+}
+
+
+func outputProgress(ch chan int, rows int) {
+  fmt.Println()
+  for i := 1; i <= rows; i++ {
+    <-ch
+    pct := 100 * float64(i) / float64(rows)
+    filled := (progressBarWidth * i) / rows
+    bar := strings.Repeat("=", filled) + strings.Repeat("-", progressBarWidth-filled)
+    fmt.Printf("\r[%s] %.2f%%", bar, pct)
+  }
+  fmt.Println()
 }
