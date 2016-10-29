@@ -19,7 +19,14 @@ func DiskScene() p_.World {
   return world
 }
 
-func OriginalScene() p_.World {	
+func BoxScene() p_.World {
+  world := p_.World{}
+  box := p_.NewBox(p_.Vector{0, 0, 10}, p_.Vector{2,2,20}, p_.Lambertian{p_.Vector{0.1, 0.3, 0.8}})
+  world.AddAll(&box)
+  return world
+}
+
+func OriginalScene() p_.World {
   world  := p_.World{}
   sphere := p_.NewSphere(0, 0, -1, 0.5, p_.Lambertian{p_.Vector{0.8, 0.3, 0.3}})
   floor  := p_.NewSphere(0, -100.5, -1, 100, p_.Lambertian{p_.Vector{0.8, 0.8, 0.0}})
