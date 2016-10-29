@@ -1,29 +1,40 @@
 package primitives
 
+
+import (
+  "fmt"
+)
+
 type Box struct {
-  position, size, a, b Vector
+  a, b Vector
   Material
 }
 
-func (box Box) Position() Vector {
-  return box.position
+func NewBox(p1, p2 Vector, m Material ) Box {
+  fmt.Printf("\n{%d ; %d}", p1.ToArray(), p2.ToArray())
+  return Box{p1, p2, m}
 }
 
-func (box Box) Size() Vector {
-  return box.size
-}
 
-func (box Box) Width() float64 {
-  return box.size.X
-}
+// func (box Box) Position() Vector {
+//   return box.position
+// }
 
-func (box Box) Height() float64 {
-  return box.size.Y
-}
+// func (box Box) Size() Vector {
+//   return box.size
+// }
 
-func (box Box) Length() float64 {
-  return box.size.Z
-}
+// func (box Box) Width() float64 {
+//   return box.size.X
+// }
+
+// func (box Box) Height() float64 {
+//   return box.size.Y
+// }
+
+// func (box Box) Length() float64 {
+//   return box.size.Z
+// }
 
 func (box Box) A() Vector {
   return box.a
@@ -34,66 +45,58 @@ func (box Box) B() Vector {
 }
 
 
- func(box * Box) Hit(r Ray, tMin float64, tMax float64) (bool, HitRecord) {
+
+func(box * Box) Hit(r Ray, tMin float64, tMax float64) (bool, HitRecord) {
   rec := HitRecord{Material: box.Material}
+  tmin := (box.a.X - r.Origin().X) / r.Direction().X
+  tmax := (box.b.X - r.Origin().X) / r.Direction().X
 
-  txmin := (box.A().X - r.Origin().X) / r.Direction().X
-  txmax := (box.B().X - r.Origin().X) / r.Direction().X
-
-  if (txmin > txmax) {
-    swap := txmin
-    txmin = txmax
-    txmax = swap
+  if tmin > tmax {
+    temp := tmin
+    tmin = tmax
+    tmax = temp
   }
 
-  tymin := (box.A().Y - r.Origin().Y) / r.Direction().Y
-  tymax := (box.B().Y - r.Origin().Y) / r.Direction().Y
+  tymin := (box.a.Y - r.Origin().Y) / r.Direction().Y
+  tymax := (box.b.Y - r.Origin().Y) / r.Direction().Y
 
-  if (tymin > tymax) {
-    swap := tymin
+  if tymin > tymax {
+    temp := tymin
     tymin = tymax
-    tymax = swap
+    tymax = temp
   }
 
-  if ((txmin > tymax) || (tymin > txmax)) {
+  if (tmin > tymax) || (tymin > tmax) {
     return false, rec
   }
 
-  if (tymin > txmin) {
-    txmin = tymin
+  if tymin > tmin {
+    tmin = tymin
   }
 
-  if (tymax < txmax) {
-    txmax = tymax
+  if tymax < tmax {
+    tmax = tymax
   }
 
-  tzmin := (box.A().Z - r.Origin().Z) / r.Direction().Z
-  tzmax := (box.B().Z - r.Origin().Z) / r.Direction().Z
+  tzmin := (box.a.Z - r.Origin().Z) / r.Direction().Z
+  tzmax := (box.b.Z - r.Origin().Z) / r.Direction().Z
 
-  if (tzmin > tzmax) {
-    swap := tzmin
+  if tzmin > tzmax {
+    temp := tzmin
     tzmin = tzmax
-    tzmax = swap
+    tzmax = temp
   }
 
-  if ((txmin > tzmax) || (tzmin > txmax)) {
+  if (tmin > tzmax) || (tzmin > tmax) {
     return false, rec
   }
 
-  if (tzmin > txmin) {
-    txmin = tzmin
+  if (tzmin > tmin) {
+    tmin = tzmin
   }
 
-  if (tzmax < txmax) {
-    txmax = tzmax
+  if (tzmax < tmax) {
+    tmax = tzmax
   }
-  t := txmin;
-  if (t < 0) {
-    t = txmax;
-    if (t < 0 || t < tMin || t > tMax) {
-      return false, rec
-    }
-  }
-  rec = buildHitRecordFromBox(t, r, box)
-  return true, rec
+    return true, rec
  }
