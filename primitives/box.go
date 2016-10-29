@@ -44,13 +44,21 @@ func (box Box) B() Vector {
   return box.b
 }
 
-
-
 func(box * Box) Hit(r Ray, tMin float64, tMax float64) (bool, HitRecord) {
   rec := HitRecord{Material: box.Material}
   rec.Normal = Vector{0,0,1}
-  tmin := (r.Origin().X - box.a.X) / r.Direction().X
-  tmax := (r.Origin().X - box.b.X) / r.Direction().X
+  tmin := tMin
+  tmax := tMax
+
+  invdir := r.Direction().Inv()
+
+  if invdir.X >= 0 {
+    tmin = (r.Origin().X - box.a.X) / r.Direction().X
+    tmax = (r.Origin().X - box.b.X) / r.Direction().X
+  } else {
+    tmax = (r.Origin().X - box.a.X) / r.Direction().X
+    tmin = (r.Origin().X - box.b.X) / r.Direction().X
+  }
 
   if tmin > tmax {
     temp := tmin

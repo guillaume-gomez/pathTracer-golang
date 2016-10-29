@@ -41,6 +41,10 @@ func (v Vector) Sub(o Vector) Vector {
 }
 
 
+func(v Vector) Inv() Vector {
+  return Vector{1 / v.X, 1/ v.Y, 1/ v.Z}
+}
+
 func (v Vector) AddScalar(t float64) Vector {
   return Vector{v.X + t, v.Y + t, v.Z + t}
 }
