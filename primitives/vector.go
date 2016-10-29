@@ -11,6 +11,10 @@ type Vector struct {
 
 var UnitVector = Vector{1, 1, 1}
 
+func(v Vector) ToArray() [3]float64 {
+  return [3]float64{v.X, v.Y, v.Z}
+}
+
 func (v Vector) Length() float64 {
   return math.Sqrt(v.X*v.X + v.Y*v.Y + v.Z*v.Z)
 }
@@ -36,6 +40,10 @@ func (v Vector) Sub(o Vector) Vector {
   return Vector{v.X - o.X, v.Y - o.Y, v.Z - o.Z}
 }
 
+
+func(v Vector) Inv() Vector {
+  return Vector{1 / v.X, 1/ v.Y, 1/ v.Z}
+}
 
 func (v Vector) AddScalar(t float64) Vector {
   return Vector{v.X + t, v.Y + t, v.Z + t}

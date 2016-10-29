@@ -6,12 +6,22 @@ type HitRecord struct {
   Material
 }
 
-func buildHitRecord(t float64, ray Ray, sphere *Sphere) HitRecord {
+func buildHitRecordFromSphere(t float64, ray Ray, sphere *Sphere) HitRecord {
   return HitRecord{
     T: t,
     Point: ray.Point(t),
     Normal: (ray.Point(t).Sub(sphere.Center())).DivideScalar(sphere.Radius()),
     Material: sphere.Material,
+  }
+}
+
+//Work in progress
+func buildHitRecordFromBox(t float64, ray Ray, box *Box) HitRecord {
+  return HitRecord{
+    T: t,
+    Point: ray.Point(t),
+    Normal: Vector{},
+    Material: box.Material,
   }
 }
 

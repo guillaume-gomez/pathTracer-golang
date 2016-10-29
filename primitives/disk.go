@@ -9,9 +9,6 @@ type Disk struct {
   radius float64
 }
 
-
-
-
 func NewDisk(point, normal Vector, m Material, radius float64) Disk {
   return Disk{Plane{point, normal, m}, radius}
 }
