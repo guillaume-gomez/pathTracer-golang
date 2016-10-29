@@ -48,7 +48,7 @@ func (box Box) B() Vector {
 
 func(box * Box) Hit(r Ray, tMin float64, tMax float64) (bool, HitRecord) {
   rec := HitRecord{Material: box.Material}
-  rec.Normal = Vector{0,0,-1}
+  rec.Normal = Vector{0,0,1}
   tmin := (r.Origin().X - box.a.X) / r.Direction().X
   tmax := (r.Origin().X - box.b.X) / r.Direction().X
 
@@ -56,7 +56,7 @@ func(box * Box) Hit(r Ray, tMin float64, tMax float64) (bool, HitRecord) {
     temp := tmin
     tmin = tmax
     tmax = temp
-    rec.Normal = Vector{0,0,1}
+    rec.Normal = Vector{0,0,-1}
   }
 
   tymin := (r.Origin().Y - box.a.Y) / r.Direction().Y
@@ -74,10 +74,12 @@ func(box * Box) Hit(r Ray, tMin float64, tMax float64) (bool, HitRecord) {
 
   if tymin > tmin {
     tmin = tymin
+    //rec.Normal = Vector{0,-1,0}
   }
 
   if tymax < tmax {
     tmax = tymax
+    //rec.Normal = Vector{0,1,0}
   }
 
   tzmin := (r.Origin().Z - box.a.Z) / r.Direction().Z
@@ -101,9 +103,9 @@ func(box * Box) Hit(r Ray, tMin float64, tMax float64) (bool, HitRecord) {
     tmax = tzmax
   }
 
-   // if (tmin < tMin) || (tmin > tMax) {
-   //   return false, rec
-   // }
+  if (tmin < tMin) || (tmin > tMax) {
+      return false, rec
+    }
 
     rec.T = tmin
     rec.Point = r.Point(tmin)
